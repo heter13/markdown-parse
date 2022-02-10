@@ -10,24 +10,25 @@ public class MarkdownParse {
         // find the next [, then find the ], then find the (, then take up to
         // the next )
         int currentIndex = 0;
-        while(currentIndex < markdown.length()) {
+        while(currentIndex < markdown.length() && currentIndex >= 0) {
             int nextOpenBracket = markdown.indexOf("[", currentIndex);
             int nextCloseBracket = markdown.indexOf("]", nextOpenBracket);
-            int openParen = markdown.indexOf("(", nextCloseBracket);
-            int closeParen = markdown.indexOf(")", openParen);
-
-            if (nextOpenBracket != 0) {
-                if (markdown.charAt(nextOpenBracket-1) != '!') {
-                    if (! markdown.substring(openParen + 1, closeParen).contains(" ")) {
-                        toReturn.add(markdown.substring(openParen + 1, closeParen));    
-                    }
+            if(nextCloseBracket == -1 || nextOpenBracket == -1){
+                break;
+            }
+            //check before and after the [] for incorrect syntax
+            try{
+                if(markdown.charAt(nextCloseBracket + 1) == '(' && markdown.charAt(nextOpenBracket - 1) != '!'){
+                    int openParen = markdown.indexOf("(", nextCloseBracket);
+                    int closeParen = markdown.indexOf(")", openParen);
+                    toReturn.add(markdown.substring(openParen + 1, closeParen));
+                    currentIndex = closeParen + 1;
+                } else{
+                    currentIndex = nextOpenBracket + 1;
                 }
+            } catch(IndexOutOfBoundsException e){
+                break;
             }
-            else {
-                toReturn.add(markdown.substring(openParen + 1, closeParen));
-            }
-            
-            currentIndex = closeParen + 1;
         }
         return toReturn;
     }
