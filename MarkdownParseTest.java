@@ -20,7 +20,7 @@ public class MarkdownParseTest {
         System.out.println(fileName.toString());
 	    String contents = Files.readString(fileName);
         ArrayList<String> links = MarkdownParse.getLinks(contents);   
-        List<String> expected = List.of("");
+        ArrayList<String> expected = new ArrayList<String>();
         assertEquals(expected, links);
     }
 }
